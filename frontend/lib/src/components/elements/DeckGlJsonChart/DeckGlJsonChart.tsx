@@ -29,7 +29,7 @@ import { Close } from "@emotion-icons/material-outlined"
 import { registerLoaders } from "@loaders.gl/core"
 import { CSVLoader } from "@loaders.gl/csv"
 import { GLTFLoader } from "@loaders.gl/gltf"
-import { MapContext, NavigationControl, StaticMap } from "react-map-gl"
+import { Map as MapboxMap, NavigationControl } from "react-map-gl"
 
 import { DeckGlJsonChart as DeckGlJsonChartProto } from "@streamlit/protobuf"
 
@@ -246,21 +246,22 @@ export const DeckGlJsonChart: FC<DeckGLProps> = props => {
           onViewStateChange={onViewStateChange}
           layers={isInitialized ? deck.layers : EMPTY_LAYERS}
           getTooltip={createTooltip}
-          // @ts-expect-error There is a type mismatch due to our versions of the libraries
-          ContextProvider={MapContext.Provider}
           controller
           onClick={
             isSelectionModeActivated && !disabled ? handleClick : undefined
           }
         >
-          <StaticMap
+          <MapboxMap
+            reuseMaps
             mapStyle={
               deck.mapStyle &&
               (typeof deck.mapStyle === "string"
                 ? deck.mapStyle
                 : deck.mapStyle[0])
             }
-            mapboxApiAccessToken={mapboxToken}
+            mapboxAccessToken={mapboxToken}
+            style={{ width: "100%", height: "100%" }}
+            interactive={false}
           />
           <StyledNavigationControlContainer>
             <NavigationControl
